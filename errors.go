@@ -37,3 +37,16 @@ func intoPathErr(op, path string, err error) error {
 
 	return &fs.PathError{Op: op, Path: path, Err: underlyingError(err)}
 }
+
+// intoLinkErr wraps the error into an os.LinkError if it's not already one,
+// using the provided operation and path.
+//
+// This helper ensures consistent error reporting across the library, making it
+// easier for callers to inspect errors (e.g., checking Op and Path).
+func intoLinkErr(op, oldpath, newpath string, err error) error {
+	if err == nil {
+		return nil
+	}
+
+	return &os.LinkError{Op: op, Old: oldpath, New: newpath, Err: underlyingError(err)}
+}

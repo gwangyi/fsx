@@ -7,7 +7,7 @@
 // overlays, and testing mocks where write capabilities are required.
 package fsx
 
-//go:generate mockgen -destination mockfs/mockfs.go -package mockfs . FS,File,TruncateFS,WriteFileFS
+//go:generate mockgen -destination mockfs/mockfs.go -package mockfs . FS,File,FileInfo,RenameFS,TruncateFS,WriteFileFS
 
 import (
 	"errors"
@@ -35,6 +35,9 @@ type File interface {
 	// It returns an error if the file was not opened with write permissions.
 	Truncate(size int64) error
 }
+
+// FileInfo is a type alias for fs.FileInfo, allowing it to be mocked by mockgen.
+type FileInfo = fs.FileInfo
 
 // readOnlyFile wraps an fs.File to implement the fsx.File interface,
 // explicitly returning errors for any write-related operations.

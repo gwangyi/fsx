@@ -112,3 +112,4 @@ func (fsys minimalFS) OpenFile(name string, flag int, mode fs.FileMode) (fsx.Fil
 var _ fsx.FS = filesystem{}
 var _ fs.ReadFileFS = filesystem{}
 var _ fsx.WriteFileFS = filesystem{}
+var _ fsx.RenameFS = filesystem{}
