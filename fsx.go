@@ -36,9 +36,6 @@ type File interface {
 	Truncate(size int64) error
 }
 
-// FileInfo is a type alias for fs.FileInfo, allowing it to be mocked by mockgen.
-type FileInfo = fs.FileInfo
-
 // DirEntry is a type alias for fs.DirEntry, allowing it to be mocked by mockgen.
 type DirEntry = fs.DirEntry
 

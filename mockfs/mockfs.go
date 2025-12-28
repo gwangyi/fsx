@@ -303,6 +303,48 @@ func (m *MockFileInfo) EXPECT() *MockFileInfoMockRecorder {
 	return m.recorder
 }
 
+// AccessTime mocks base method.
+func (m *MockFileInfo) AccessTime() time.Time {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AccessTime")
+	ret0, _ := ret[0].(time.Time)
+	return ret0
+}
+
+// AccessTime indicates an expected call of AccessTime.
+func (mr *MockFileInfoMockRecorder) AccessTime() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AccessTime", reflect.TypeOf((*MockFileInfo)(nil).AccessTime))
+}
+
+// ChangeTime mocks base method.
+func (m *MockFileInfo) ChangeTime() time.Time {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ChangeTime")
+	ret0, _ := ret[0].(time.Time)
+	return ret0
+}
+
+// ChangeTime indicates an expected call of ChangeTime.
+func (mr *MockFileInfoMockRecorder) ChangeTime() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangeTime", reflect.TypeOf((*MockFileInfo)(nil).ChangeTime))
+}
+
+// Group mocks base method.
+func (m *MockFileInfo) Group() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Group")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// Group indicates an expected call of Group.
+func (mr *MockFileInfoMockRecorder) Group() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Group", reflect.TypeOf((*MockFileInfo)(nil).Group))
+}
+
 // IsDir mocks base method.
 func (m *MockFileInfo) IsDir() bool {
 	m.ctrl.T.Helper()
@@ -357,6 +399,20 @@ func (m *MockFileInfo) Name() string {
 func (mr *MockFileInfoMockRecorder) Name() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockFileInfo)(nil).Name))
+}
+
+// Owner mocks base method.
+func (m *MockFileInfo) Owner() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Owner")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// Owner indicates an expected call of Owner.
+func (mr *MockFileInfoMockRecorder) Owner() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Owner", reflect.TypeOf((*MockFileInfo)(nil).Owner))
 }
 
 // Size mocks base method.
