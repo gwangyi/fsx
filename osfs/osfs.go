@@ -152,6 +152,8 @@ func (fsys filesystem) ReadLink(name string) (string, error) {
 // - `fsx.DirFS`: For create, read directories.
 // - `fsx.RemoveAllFS`: For delete non-empty directories.
 // - `fsx.SymlinkFS`: For symlinks.
+// - `fsx.ChangeFS`: For metadata operations.
+// - `fsx.LchownFS`: For symlink metadata operations.
 var _ fsx.FS = filesystem{}
 var _ fs.ReadFileFS = filesystem{}
 var _ fsx.WriteFileFS = filesystem{}
@@ -159,3 +161,5 @@ var _ fsx.RenameFS = filesystem{}
 var _ fsx.DirFS = filesystem{}
 var _ fsx.RemoveAllFS = filesystem{}
 var _ fsx.SymlinkFS = filesystem{}
+var _ fsx.ChangeFS = filesystem{}
+var _ fsx.LchownFS = filesystem{}
