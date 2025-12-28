@@ -123,6 +123,26 @@ func (fsys filesystem) ReadDir(name string) ([]fs.DirEntry, error) {
 	return fs.ReadDir(fsys.FS(), name)
 }
 
+// ReadLink returns the destination of the named symbolic link within the filesystem's root.
+// This method delegates the operation to the underlying `os.Root.Readlink` method, ensuring
+// that the access is securely confined to the designated root directory.
+//
+// By using the `os.Root`-based filesystem, this operation ensures that reading symbolic links
+// respects the confinement rules established when the `osfs` instance was created.
+//
+// Parameters:
+//
+//	name: The path to the symbolic link to read, relative to the confined root.
+//
+// Returns:
+//
+//	The destination path of the symbolic link, or an error if the link cannot be read
+//	(e.g., file not found, it is not a symbolic link, permission denied, or if `name`
+//	points outside the confined root).
+func (fsys filesystem) ReadLink(name string) (string, error) {
+	return fsys.Readlink(name)
+}
+
 // Ensure that `filesystem` correctly implements all expected filesystem interfaces.
 // This compile-time check verifies that `filesystem` satisfies the contracts defined by:
 // - `fsx.FS`: The primary filesystem interface.
@@ -131,9 +151,11 @@ func (fsys filesystem) ReadDir(name string) ([]fs.DirEntry, error) {
 // - `fsx.WriteFileFS`: For writing to files.
 // - `fsx.DirFS`: For create, read directories.
 // - `fsx.RemoveAllFS`: For delete non-empty directories.
+// - `fsx.SymlinkFS`: For symlinks.
 var _ fsx.FS = filesystem{}
 var _ fs.ReadFileFS = filesystem{}
 var _ fsx.WriteFileFS = filesystem{}
 var _ fsx.RenameFS = filesystem{}
 var _ fsx.DirFS = filesystem{}
 var _ fsx.RemoveAllFS = filesystem{}
+var _ fsx.SymlinkFS = filesystem{}
