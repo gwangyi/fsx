@@ -103,13 +103,37 @@ func (fsys minimalFS) OpenFile(name string, flag int, mode fs.FileMode) (fsx.Fil
 	return fsys.Root.OpenFile(name, flag, mode)
 }
 
+// ReadDir reads the named directory within the filesystem's root and returns a list of directory entries
+// sorted by filename. This method leverages `fs.ReadDir` in conjunction with the underlying `os.Root`
+// filesystem obtained via `fsys.Root.FS()`.
+//
+// By using the `os.Root`-based filesystem, this operation ensures that directory reads are securely
+// confined to the root directory specified when the `osfs` instance was created. Access to directories
+// outside this root (e.g., via relative paths like "..") is prevented.
+//
+// Parameters:
+//
+//	name: The path to the directory to read, relative to the confined root.
+//
+// Returns:
+//
+//	A slice of `fs.DirEntry` sorted by filename, or an error if the directory cannot be read
+//	(e.g., directory not found, permission denied, or if `name` points outside the confined root).
+func (fsys filesystem) ReadDir(name string) ([]fs.DirEntry, error) {
+	return fs.ReadDir(fsys.FS(), name)
+}
+
 // Ensure that `filesystem` correctly implements all expected filesystem interfaces.
 // This compile-time check verifies that `filesystem` satisfies the contracts defined by:
 // - `fsx.FS`: The primary filesystem interface.
 // - `fs.ReadFileFS`: For efficiently reading entire files.
 // - `fsx.TruncateFS`: For resizing files.
 // - `fsx.WriteFileFS`: For writing to files.
+// - `fsx.DirFS`: For create, read directories.
+// - `fsx.RemoveAllFS`: For delete non-empty directories.
 var _ fsx.FS = filesystem{}
 var _ fs.ReadFileFS = filesystem{}
 var _ fsx.WriteFileFS = filesystem{}
 var _ fsx.RenameFS = filesystem{}
+var _ fsx.DirFS = filesystem{}
+var _ fsx.RemoveAllFS = filesystem{}
