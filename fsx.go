@@ -7,7 +7,7 @@
 // overlays, and testing mocks where write capabilities are required.
 package fsx
 
-//go:generate mockgen -destination mockfs/mockfs.go -package mockfs . FS,DirEntry,File,FileInfo,DirFS,MkdirAllFS,RemoveAllFS,RenameFS,SymlinkFS,TruncateFS,WriteFileFS
+//go:generate mockgen -destination mockfs/mockfs.go -package mockfs . FS,DirEntry,File,FileInfo,ChangeFS,DirFS,MkdirAllFS,RemoveAllFS,RenameFS,SymlinkFS,TruncateFS,WriteFileFS
 
 import (
 	"errors"
