@@ -1,7 +1,7 @@
 // Package contextualfs provides extended filesystem interfaces that support write operations.
 package contextual
 
-//go:generate mockgen -destination ../mockfs/contextual/mockfs.go -package cmockfs . FS,ReadFileFS,WriterFS,ChangeFS,ReadDirFS,DirFS,MkdirAllFS,RemoveAllFS,RenameFS,StatFS,ReadLinkFS,SymlinkFS,LchownFS,TruncateFS,WriteFileFS
+//go:generate mockgen -destination ../mockfs/contextual/mockfs.go -package cmockfs . FS,ReadFileFS,WriterFS,ChangeFS,ReadDirFS,DirFS,MkdirAllFS,RemoveAllFS,RenameFS,StatFS,ReadLinkFS,SymlinkFS,LchownFS,TruncateFS,WriteFileFS,FileSystem
 
 import (
 	"context"
@@ -140,4 +140,22 @@ func ReadFile(ctx context.Context, fsys FS, name string) ([]byte, error) {
 	defer func() { _ = f.Close() }()
 
 	return io.ReadAll(f)
+}
+
+type FileSystem interface {
+	FS
+	ChangeFS
+	DirFS
+	LchownFS
+	MkdirAllFS
+	ReadDirFS
+	ReadFileFS
+	ReadLinkFS
+	RemoveAllFS
+	RenameFS
+	StatFS
+	SymlinkFS
+	TruncateFS
+	WriteFileFS
+	WriterFS
 }

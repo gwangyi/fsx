@@ -7,7 +7,7 @@
 // overlays, and testing mocks where write capabilities are required.
 package fsx
 
-//go:generate mockgen -destination mockfs/mockfs.go -package mockfs . FS,DirEntry,File,ReadDirFile,FileInfo,ChangeFS,DirFS,LchownFS,MkdirAllFS,RemoveAllFS,RenameFS,SymlinkFS,TruncateFS,WriteFileFS
+//go:generate mockgen -destination mockfs/mockfs.go -package mockfs . FS,DirEntry,File,ReadDirFile,FileInfo,ChangeFS,DirFS,LchownFS,MkdirAllFS,RemoveAllFS,RenameFS,SymlinkFS,TruncateFS,WriteFileFS,FileSystem
 
 import (
 	"errors"
@@ -119,4 +119,23 @@ func Remove(fsys fs.FS, name string) error {
 // attempting to extract extended system-specific information.
 func ExtendFileInfo(fi fs.FileInfo) FileInfo {
 	return internal.ExtendFileInfo(fi)
+}
+
+type FileSystem interface {
+	fs.FS
+	fs.ReadDirFS
+	fs.ReadFileFS
+	fs.ReadLinkFS
+	fs.StatFS
+
+	FS
+	ChangeFS
+	DirFS
+	LchownFS
+	MkdirAllFS
+	RemoveAllFS
+	RenameFS
+	SymlinkFS
+	TruncateFS
+	WriteFileFS
 }
