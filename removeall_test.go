@@ -30,7 +30,7 @@ func TestRemoveAll(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		// Expectation: Remove("foo") -> nil
 		m.EXPECT().Remove("foo").Return(nil)
 

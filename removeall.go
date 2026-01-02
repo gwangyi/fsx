@@ -14,7 +14,7 @@ import (
 // Implementations of this interface can provide a more efficient way to remove
 // a directory tree compared to the default recursive implementation.
 type RemoveAllFS interface {
-	FS
+	WriterFS
 
 	// RemoveAll removes path and any children it contains.
 	// It removes everything it can but returns the first error

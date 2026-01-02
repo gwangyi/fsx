@@ -51,7 +51,7 @@ func TestToContextual_WriterFS(t *testing.T) {
 	t.Run("Create", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		ctxFS := contextual.ToContextual(m).(contextual.WriterFS)
 		name := "newfile"
 		m.EXPECT().Create(name).Return(nil, nil)
@@ -64,7 +64,7 @@ func TestToContextual_WriterFS(t *testing.T) {
 	t.Run("OpenFile", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		ctxFS := contextual.ToContextual(m).(contextual.WriterFS)
 		name := "openfile"
 		flag := 0
@@ -79,7 +79,7 @@ func TestToContextual_WriterFS(t *testing.T) {
 	t.Run("Remove", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		ctxFS := contextual.ToContextual(m).(contextual.WriterFS)
 		name := "oldfile"
 		m.EXPECT().Remove(name).Return(nil)

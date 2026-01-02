@@ -36,7 +36,7 @@ func TestCreate(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		name := "foo"
 		m.EXPECT().Create(name).Return(nil, nil)
 
@@ -50,7 +50,7 @@ func TestCreate(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		name := "foo"
 		expectedErr := errors.New("create error")
 		m.EXPECT().Create(name).Return(nil, expectedErr)
@@ -75,7 +75,7 @@ func TestCreate(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		name := "foo"
 		expectedErr := errors.New("create error")
 		m.EXPECT().Create(name).Return(nil, &fs.PathError{Err: expectedErr})
@@ -110,7 +110,7 @@ func TestOpenFile(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		name := "foo"
 		flag := os.O_RDWR
 		perm := fs.FileMode(0644)
@@ -127,7 +127,7 @@ func TestOpenFile(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		name := "foo"
 		flag := os.O_RDWR
 		perm := fs.FileMode(0644)
@@ -198,7 +198,7 @@ func TestRemove(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		name := "foo"
 		m.EXPECT().Remove(name).Return(nil)
 
@@ -212,7 +212,7 @@ func TestRemove(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		name := "foo"
 		expectedErr := errors.New("remove error")
 		m.EXPECT().Remove(name).Return(expectedErr)

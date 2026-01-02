@@ -123,17 +123,17 @@ func (n *nonContextualFS) Open(name string) (fs.File, error) {
 	return n.fsys.Open(n.ctx, name)
 }
 
-// Create implements fsx.FS.
+// Create implements fsx.WriterFS.
 func (n *nonContextualFS) Create(name string) (File, error) {
 	return Create(n.ctx, n.fsys, name)
 }
 
-// OpenFile implements fsx.FS.
+// OpenFile implements fsx.WriterFS.
 func (n *nonContextualFS) OpenFile(name string, flag int, mode fs.FileMode) (File, error) {
 	return OpenFile(n.ctx, n.fsys, name, flag, mode)
 }
 
-// Remove implements fsx.FS.
+// Remove implements fsx.WriterFS.
 func (n *nonContextualFS) Remove(name string) error {
 	return Remove(n.ctx, n.fsys, name)
 }

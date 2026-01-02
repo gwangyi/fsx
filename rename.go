@@ -11,7 +11,7 @@ import (
 // RenameFS is the interface implemented by a file system that supports
 // renaming files.
 type RenameFS interface {
-	FS
+	WriterFS
 
 	// Rename moves oldname to newname.
 	// If newname already exists and is not a directory, Rename replaces it.

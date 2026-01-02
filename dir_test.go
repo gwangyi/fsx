@@ -28,7 +28,7 @@ func TestMkdir(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		mockFS := mockfs.NewMockFS(ctrl) // This mock does not implement DirFS
+		mockFS := mockfs.NewMockWriterFS(ctrl) // This mock does not implement DirFS
 		err := fsx.Mkdir(mockFS, "foo", 0755)
 		if !errors.Is(err, errors.ErrUnsupported) {
 			t.Errorf("expected ErrUnsupported, got %v", err)
@@ -146,7 +146,7 @@ func TestMkdirAll(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		mockFS := mockfs.NewMockFS(ctrl) // This mock does not implement DirFS
+		mockFS := mockfs.NewMockWriterFS(ctrl) // This mock does not implement DirFS
 		// MkdirAll will try to Stat the path to see if it exists
 		mockFS.EXPECT().Open("foo").Return(nil, fs.ErrNotExist)
 

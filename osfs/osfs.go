@@ -1,4 +1,4 @@
-// Package osfs provides a robust and secure implementation of the fsx.FS filesystem interface
+// Package osfs provides a robust and secure implementation of the fsx.WriterFS filesystem interface
 // by leveraging the host's operating system files. It is designed to confine file operations
 // within a specified root directory using Go's `os.Root` introduced since Go 1.24+.
 // This confinement mechanism prevents directory traversal attacks (e.g., via ".." paths)
@@ -14,7 +14,7 @@ import (
 	"github.com/gwangyi/fsx"
 )
 
-// filesystem is the main implementation of the `fsx.FS` interface for the `osfs` package.
+// filesystem is the main implementation of the `fsx.WriterFS` interface for the `osfs` package.
 // It embeds `minimalFS` to inherit the `os.Root` functionality, thereby ensuring all
 // file operations are securely confined to the designated root directory.
 // This structure prevents unauthorized access outside the root, including attempts
@@ -145,7 +145,7 @@ func (fsys filesystem) ReadLink(name string) (string, error) {
 
 // Ensure that `filesystem` correctly implements all expected filesystem interfaces.
 // This compile-time check verifies that `filesystem` satisfies the contracts defined by:
-// - `fsx.FS`: The primary filesystem interface.
+// - `fsx.WriterFS`: The primary filesystem interface.
 // - `fs.ReadFileFS`: For efficiently reading entire files.
 // - `fsx.TruncateFS`: For resizing files.
 // - `fsx.WriteFileFS`: For writing to files.
@@ -154,7 +154,7 @@ func (fsys filesystem) ReadLink(name string) (string, error) {
 // - `fsx.SymlinkFS`: For symlinks.
 // - `fsx.ChangeFS`: For metadata operations.
 // - `fsx.LchownFS`: For symlink metadata operations.
-var _ fsx.FS = filesystem{}
+var _ fsx.WriterFS = filesystem{}
 var _ fs.ReadFileFS = filesystem{}
 var _ fsx.WriteFileFS = filesystem{}
 var _ fsx.RenameFS = filesystem{}

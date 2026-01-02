@@ -72,7 +72,7 @@ func TestWriteFile(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		name := "foo"
 		data := []byte("bar")
 		perm := fs.FileMode(0644)
@@ -101,7 +101,7 @@ func TestWriteFile(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		name := "foo"
 		data := []byte("bar")
 		perm := fs.FileMode(0644)

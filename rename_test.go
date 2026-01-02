@@ -29,7 +29,7 @@ func TestRename(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		if err := fsx.Rename(m, "old", "old"); err != nil {
 			t.Errorf("unexpected error: %v", err)
 		}
@@ -39,7 +39,7 @@ func TestRename(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		oldName := "old"
 		newName := "new"
 		mode := fs.FileMode(0644)
@@ -71,7 +71,7 @@ func TestRename(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		oldName := "old"
 		newName := "new"
 		expectedErr := errors.New("open error")
@@ -88,7 +88,7 @@ func TestRename(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		oldName := "old"
 		newName := "new"
 		expectedMode := fs.FileMode(0666) // Default mode if Stat fails
@@ -114,7 +114,7 @@ func TestRename(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		oldName := "old"
 		newName := "new"
 		expectedErr := errors.New("create error")
@@ -141,7 +141,7 @@ func TestRename(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		oldName := "old"
 		newName := "new"
 		expectedErr := errors.New("copy error")
@@ -172,7 +172,7 @@ func TestRename(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		oldName := "old"
 		newName := "new"
 		expectedErr := errors.New("close error")
@@ -203,7 +203,7 @@ func TestRename(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		m := mockfs.NewMockFS(ctrl)
+		m := mockfs.NewMockWriterFS(ctrl)
 		oldName := "old"
 		newName := "new"
 		expectedErr := errors.New("remove error")

@@ -57,7 +57,7 @@ type ReadFileFS interface {
 // WriterFS is the interface implemented by a file system that supports
 // write operations (Create, OpenFile, Remove) in addition to Open.
 //
-// It corresponds to fsx.FS but with context parameters.
+// It corresponds to fsx.WriterFS but with context parameters.
 type WriterFS interface {
 	FS
 
