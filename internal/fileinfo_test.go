@@ -1,4 +1,4 @@
-package fsx_test
+package internal_test
 
 import (
 	"io/fs"

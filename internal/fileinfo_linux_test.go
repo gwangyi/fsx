@@ -1,6 +1,6 @@
 //go:build linux
 
-package fsx_test
+package internal_test
 
 import (
 	"strconv"

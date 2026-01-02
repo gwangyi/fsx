@@ -11,55 +11,27 @@ package fsx
 
 import (
 	"errors"
-	"io"
 	"io/fs"
 	"os"
+
+	"github.com/gwangyi/fsx/internal"
 )
 
 const (
 	// O_ACCMODE is the mask for access modes (O_RDONLY, O_WRONLY, O_RDWR).
-	// It is used to mask the flag argument in OpenFile to extract the access mode.
-	O_ACCMODE = 3
+	O_ACCMODE = internal.O_ACCMODE
 )
 
 // File is an open file that supports reading, writing, and truncation.
-// It extends fs.File (which only supports read-related operations) with
-// io.Writer and a Truncate method.
-//
-// Implementations of this interface allow users to modify the file content
-// after opening it.
-type File interface {
-	fs.File
-	io.Writer
-	// Truncate changes the size of the file.
-	// It returns an error if the file was not opened with write permissions.
-	Truncate(size int64) error
-}
+// It extends fs.File with io.Writer and a Truncate method.
+type File = internal.File
+
+// FileInfo extends the standard fs.FileInfo interface with additional metadata
+// like ownership, access time, and change time.
+type FileInfo = internal.FileInfo
 
 // DirEntry is a type alias for fs.DirEntry, allowing it to be mocked by mockgen.
 type DirEntry = fs.DirEntry
-
-// readOnlyFile wraps an fs.File to implement the fsx.File interface,
-// explicitly returning errors for any write-related operations.
-//
-// This struct is used when an underlying fs.FS only supports Open (read-only)
-// but the context requires an fsx.File interface. It ensures that calls to
-// Write or Truncate fail gracefully with a specific error.
-type readOnlyFile struct {
-	fs.File
-}
-
-// Write returns ErrBadFileDescriptor as readOnlyFile does not support writing.
-// This enforces the read-only nature of the wrapped file.
-func (readOnlyFile) Write(d []byte) (int, error) {
-	return 0, ErrBadFileDescriptor
-}
-
-// Truncate returns ErrBadFileDescriptor as readOnlyFile does not support truncation.
-// This enforces the read-only nature of the wrapped file.
-func (readOnlyFile) Truncate(size int64) error {
-	return ErrBadFileDescriptor
-}
 
 // FS is a filesystem interface that extends fs.FS to support creating, opening with flags,
 // and removing files.
@@ -96,7 +68,7 @@ type FS interface {
 func Create(fsys fs.FS, name string) (File, error) {
 	if xfs, ok := fsys.(FS); ok {
 		f, err := xfs.Create(name)
-		return f, intoPathErr("open", name, err)
+		return f, internal.IntoPathErr("open", name, err)
 	}
 
 	return nil, errors.ErrUnsupported
@@ -114,18 +86,18 @@ func OpenFile(fsys fs.FS, name string, flag int, mode fs.FileMode) (File, error)
 	if xfs, ok := fsys.(FS); ok {
 		// Try the specific OpenFile implementation first.
 		if f, err := xfs.OpenFile(name, flag, mode); !errors.Is(err, errors.ErrUnsupported) {
-			return f, intoPathErr("open", name, err)
+			return f, internal.IntoPathErr("open", name, err)
 		}
 	}
 
 	// Fallback for read-only access if OpenFile is not supported or not implemented.
-	if flag&O_ACCMODE == os.O_RDONLY {
+	if flag&internal.O_ACCMODE == os.O_RDONLY {
 		f, err := fsys.Open(name)
 		if err != nil {
-			return nil, intoPathErr("open", name, err)
+			return nil, internal.IntoPathErr("open", name, err)
 		}
-		// Wrap the standard fs.File in a readOnlyFile to satisfy the fsx.File interface.
-		return readOnlyFile{File: f}, nil
+		// Wrap the standard fs.File in a internal.ReadOnlyFile to satisfy the fsx.File interface.
+		return internal.ReadOnlyFile{File: f}, nil
 	}
 
 	return nil, errors.ErrUnsupported
@@ -137,8 +109,14 @@ func OpenFile(fsys fs.FS, name string, flag int, mode fs.FileMode) (File, error)
 // Otherwise, it returns errors.ErrUnsupported.
 func Remove(fsys fs.FS, name string) error {
 	if xfs, ok := fsys.(FS); ok {
-		return intoPathErr("remove", name, xfs.Remove(name))
+		return internal.IntoPathErr("remove", name, xfs.Remove(name))
 	}
 
 	return errors.ErrUnsupported
+}
+
+// ExtendFileInfo returns a FileInfo that wraps the provided fs.FileInfo,
+// attempting to extract extended system-specific information.
+func ExtendFileInfo(fi fs.FileInfo) FileInfo {
+	return internal.ExtendFileInfo(fi)
 }

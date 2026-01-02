@@ -5,6 +5,8 @@ import (
 	"io/fs"
 	"path"
 	"syscall"
+
+	"github.com/gwangyi/fsx/internal"
 )
 
 // DirFS is an interface for filesystems that support creating directories.
@@ -38,7 +40,7 @@ type MkdirAllFS interface {
 // Otherwise, it returns errors.ErrUnsupported.
 func Mkdir(fsys fs.FS, name string, perm fs.FileMode) error {
 	if fsys, ok := fsys.(DirFS); ok {
-		return intoPathErr("mkdir", name, fsys.Mkdir(name, perm))
+		return internal.IntoPathErr("mkdir", name, fsys.Mkdir(name, perm))
 	}
 
 	return errors.ErrUnsupported
@@ -57,7 +59,7 @@ func MkdirAll(fsys fs.FS, name string, perm fs.FileMode) error {
 	// Try the optimized MkdirAllFS implementation first.
 	if fsys, ok := fsys.(MkdirAllFS); ok {
 		if err := fsys.MkdirAll(name, perm); !errors.Is(err, errors.ErrUnsupported) {
-			return intoPathErr("mkdir", name, err)
+			return internal.IntoPathErr("mkdir", name, err)
 		}
 	}
 

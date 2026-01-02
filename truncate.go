@@ -4,6 +4,8 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+
+	"github.com/gwangyi/fsx/internal"
 )
 
 // TruncateFS is the interface implemented by a file system that supports
@@ -24,7 +26,7 @@ func Truncate(fsys fs.FS, name string, size int64) error {
 	// Try the optimized/direct TruncateFS implementation first.
 	if fsys, ok := fsys.(TruncateFS); ok {
 		if err := fsys.Truncate(name, size); !errors.Is(err, errors.ErrUnsupported) {
-			return intoPathErr("truncate", name, err)
+			return internal.IntoPathErr("truncate", name, err)
 		}
 	}
 
@@ -32,8 +34,8 @@ func Truncate(fsys fs.FS, name string, size int64) error {
 	// For Read-only file system, OpenFile(O_WRONLY) will fail with ErrUnsupported.
 	f, err := OpenFile(fsys, name, os.O_WRONLY, 0)
 	if err != nil {
-		return intoPathErr("truncate", name, err)
+		return internal.IntoPathErr("truncate", name, err)
 	}
 	defer func() { _ = f.Close() }()
-	return intoPathErr("truncate", name, f.Truncate(size))
+	return internal.IntoPathErr("truncate", name, f.Truncate(size))
 }

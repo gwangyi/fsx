@@ -1,6 +1,6 @@
 //go:build !linux && !windows
 
-package fsx
+package internal
 
 // fillFromSys attempts to populate defaultFileInfo fields from the Sys() source.
 // This is the fallback implementation for operating systems other than Linux and Windows.

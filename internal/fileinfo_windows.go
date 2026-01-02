@@ -1,6 +1,6 @@
 //go:build windows
 
-package fsx
+package internal
 
 import (
 	"syscall"

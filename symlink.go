@@ -3,6 +3,8 @@ package fsx
 import (
 	"errors"
 	"io/fs"
+
+	"github.com/gwangyi/fsx/internal"
 )
 
 // SymlinkFS is an interface for filesystems that support creating symbolic links.
@@ -37,7 +39,7 @@ func Symlink(fsys fs.FS, oldname, newname string) error {
 	if sfs, ok := fsys.(SymlinkFS); ok {
 		return sfs.Symlink(oldname, newname)
 	}
-	return intoPathErr("symlink", newname, errors.ErrUnsupported)
+	return internal.IntoPathErr("symlink", newname, errors.ErrUnsupported)
 }
 
 // Lchown changes the ownership of the named file.
@@ -49,5 +51,5 @@ func Lchown(fsys fs.FS, name, owner, group string) error {
 	if cfs, ok := fsys.(LchownFS); ok {
 		return cfs.Lchown(name, owner, group)
 	}
-	return intoPathErr("lchown", name, errors.ErrUnsupported)
+	return internal.IntoPathErr("lchown", name, errors.ErrUnsupported)
 }

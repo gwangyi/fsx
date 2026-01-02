@@ -4,6 +4,8 @@ import (
 	"io"
 	"io/fs"
 	"os"
+
+	"github.com/gwangyi/fsx/internal"
 )
 
 // RenameFS is the interface implemented by a file system that supports
@@ -24,7 +26,7 @@ type RenameFS interface {
 // to the destination and then removing the source. This fallback is not atomic.
 func Rename(fsys fs.FS, oldname, newname string) error {
 	if rfs, ok := fsys.(RenameFS); ok {
-		return intoLinkErr("rename", oldname, newname, rfs.Rename(oldname, newname))
+		return internal.IntoLinkErr("rename", oldname, newname, rfs.Rename(oldname, newname))
 	}
 
 	if oldname == newname {
@@ -34,7 +36,7 @@ func Rename(fsys fs.FS, oldname, newname string) error {
 	// Fallback: Copy and Remove.
 	src, err := fsys.Open(oldname)
 	if err != nil {
-		return intoLinkErr("rename", oldname, newname, err)
+		return internal.IntoLinkErr("rename", oldname, newname, err)
 	}
 	defer func() { _ = src.Close() }()
 
@@ -46,23 +48,23 @@ func Rename(fsys fs.FS, oldname, newname string) error {
 	// Create destination file with the same mode.
 	dst, err := OpenFile(fsys, newname, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, mode)
 	if err != nil {
-		return intoLinkErr("rename", oldname, newname, err)
+		return internal.IntoLinkErr("rename", oldname, newname, err)
 	}
 
 	if _, err := io.Copy(dst, src); err != nil {
 		_ = dst.Close()
-		return intoLinkErr("rename", oldname, newname, err)
+		return internal.IntoLinkErr("rename", oldname, newname, err)
 	}
 
 	if err := dst.Close(); err != nil {
-		return intoLinkErr("rename", oldname, newname, err)
+		return internal.IntoLinkErr("rename", oldname, newname, err)
 	}
 
 	// Close src before removing to ensure no lock is held (e.g. on Windows)
 	_ = src.Close()
 
 	if err := Remove(fsys, oldname); err != nil {
-		return intoLinkErr("rename", oldname, newname, err)
+		return internal.IntoLinkErr("rename", oldname, newname, err)
 	}
 
 	return nil

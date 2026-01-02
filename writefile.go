@@ -4,6 +4,8 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+
+	"github.com/gwangyi/fsx/internal"
 )
 
 // WriteFileFS is the interface implemented by a filesystem that provides
@@ -27,16 +29,16 @@ func WriteFile(fsys fs.FS, name string, data []byte, perm fs.FileMode) error {
 	// Try optimized WriteFileFS first
 	if fsysImpl, ok := fsys.(WriteFileFS); ok {
 		if err := fsysImpl.WriteFile(name, data, perm); !errors.Is(err, errors.ErrUnsupported) {
-			return intoPathErr("writefile", name, err)
+			return internal.IntoPathErr("writefile", name, err)
 		}
 	}
 
 	// Fallback to OpenFile -> Write
 	file, err := OpenFile(fsys, name, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
 	if err != nil {
-		return intoPathErr("writefile", name, err)
+		return internal.IntoPathErr("writefile", name, err)
 	}
 	defer func() { _ = file.Close() }()
 	_, err = file.Write(data)
-	return intoPathErr("writefile", name, err)
+	return internal.IntoPathErr("writefile", name, err)
 }

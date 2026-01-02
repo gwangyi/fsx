@@ -4,6 +4,8 @@ import (
 	"io/fs"
 	"os"
 	"path"
+
+	"github.com/gwangyi/fsx/internal"
 )
 
 // RemoveAllFS is the interface implemented by a file system that supports
@@ -29,7 +31,7 @@ type RemoveAllFS interface {
 func RemoveAll(fsys fs.FS, name string) error {
 	// Try the optimized RemoveAllFS implementation first.
 	if rfs, ok := fsys.(RemoveAllFS); ok {
-		return intoPathErr("remove", name, rfs.RemoveAll(name))
+		return internal.IntoPathErr("remove", name, rfs.RemoveAll(name))
 	}
 
 	// Attempt to remove the path directly.

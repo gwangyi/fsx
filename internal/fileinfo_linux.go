@@ -1,6 +1,6 @@
 //go:build linux
 
-package fsx
+package internal
 
 import (
 	"os/user"

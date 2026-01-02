@@ -1,4 +1,4 @@
-package fsx
+package internal
 
 import (
 	"io/fs"
