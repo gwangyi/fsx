@@ -7,7 +7,7 @@
 // overlays, and testing mocks where write capabilities are required.
 package fsx
 
-//go:generate mockgen -destination mockfs/mockfs.go -package mockfs . FS,DirEntry,File,ReadDirFile,FileInfo,ChangeFS,DirFS,LchownFS,MkdirAllFS,RemoveAllFS,RenameFS,SymlinkFS,TruncateFS,WriteFileFS,FileSystem
+//go:generate mockgen -destination mockfs/mockfs.go -package mockfs . WriterFS,DirEntry,File,ReadDirFile,FileInfo,ChangeFS,DirFS,LchownFS,MkdirAllFS,RemoveAllFS,RenameFS,SymlinkFS,TruncateFS,WriteFileFS,FileSystem
 
 import (
 	"errors"
@@ -33,12 +33,12 @@ type FileInfo = internal.FileInfo
 // DirEntry is a type alias for fs.DirEntry, allowing it to be mocked by mockgen.
 type DirEntry = fs.DirEntry
 
-// FS is a filesystem interface that extends fs.FS to support creating, opening with flags,
+// WriterFS is a filesystem interface that extends fs.FS to support creating, opening with flags,
 // and removing files.
 //
-// While fs.FS is read-only, fsx.FS adds the necessary methods to modify the filesystem structure
+// While fs.FS is read-only, fsx.WriterFS adds the necessary methods to modify the filesystem structure
 // and file contents.
-type FS interface {
+type WriterFS interface {
 	fs.FS
 
 	// Create creates or truncates the named file. If the file already exists,
@@ -61,12 +61,12 @@ type FS interface {
 }
 
 // Create creates or truncates the named file in the given filesystem.
-// It acts as a helper function that checks if the filesystem implements fsx.FS.
+// It acts as a helper function that checks if the filesystem implements fsx.WriterFS.
 //
-// If fsys implements fsx.FS, it calls fsys.Create.
-// If fsys does not implement fsx.FS, it returns errors.ErrUnsupported.
+// If fsys implements fsx.WriterFS, it calls fsys.Create.
+// If fsys does not implement fsx.WriterFS, it returns errors.ErrUnsupported.
 func Create(fsys fs.FS, name string) (File, error) {
-	if xfs, ok := fsys.(FS); ok {
+	if xfs, ok := fsys.(WriterFS); ok {
 		f, err := xfs.Create(name)
 		return f, internal.IntoPathErr("open", name, err)
 	}
@@ -77,13 +77,13 @@ func Create(fsys fs.FS, name string) (File, error) {
 // OpenFile opens the named file with specified flag and mode in the given filesystem.
 // It provides a generalized open call similar to os.OpenFile.
 //
-// If fsys implements fsx.FS, it calls fsys.OpenFile.
+// If fsys implements fsx.WriterFS, it calls fsys.OpenFile.
 // If the operation is not supported by the filesystem implementation (returns ErrUnsupported)
-// or if fsys is not an fsx.FS, it attempts a fallback for read-only access:
+// or if fsys is not an fsx.WriterFS, it attempts a fallback for read-only access:
 // if the flag requests read-only access (O_RDONLY), it falls back to fsys.Open.
 // Otherwise, it returns errors.ErrUnsupported.
 func OpenFile(fsys fs.FS, name string, flag int, mode fs.FileMode) (File, error) {
-	if xfs, ok := fsys.(FS); ok {
+	if xfs, ok := fsys.(WriterFS); ok {
 		// Try the specific OpenFile implementation first.
 		if f, err := xfs.OpenFile(name, flag, mode); !errors.Is(err, errors.ErrUnsupported) {
 			return f, internal.IntoPathErr("open", name, err)
@@ -105,10 +105,10 @@ func OpenFile(fsys fs.FS, name string, flag int, mode fs.FileMode) (File, error)
 
 // Remove removes the named file or (empty) directory from the filesystem.
 //
-// If fsys implements fsx.FS, it calls fsys.Remove.
+// If fsys implements fsx.WriterFS, it calls fsys.Remove.
 // Otherwise, it returns errors.ErrUnsupported.
 func Remove(fsys fs.FS, name string) error {
-	if xfs, ok := fsys.(FS); ok {
+	if xfs, ok := fsys.(WriterFS); ok {
 		return internal.IntoPathErr("remove", name, xfs.Remove(name))
 	}
 
@@ -128,7 +128,7 @@ type FileSystem interface {
 	fs.ReadLinkFS
 	fs.StatFS
 
-	FS
+	WriterFS
 	ChangeFS
 	DirFS
 	LchownFS

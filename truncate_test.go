@@ -30,7 +30,7 @@ func TestTruncate(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		mockFS := mockfs.NewMockFS(ctrl)
+		mockFS := mockfs.NewMockWriterFS(ctrl)
 		mockFile := mockfs.NewMockFile(ctrl)
 
 		mockFS.EXPECT().OpenFile("foo", os.O_WRONLY, fs.FileMode(0)).Return(mockFile, nil).Times(1)
@@ -55,7 +55,7 @@ func TestTruncate(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		mockFS := mockfs.NewMockFS(ctrl)
+		mockFS := mockfs.NewMockWriterFS(ctrl)
 		mockFS.EXPECT().OpenFile("foo", os.O_WRONLY, fs.FileMode(0)).Return(nil, fs.ErrNotExist).Times(1)
 
 		err := fsx.Truncate(mockFS, "foo", 100)

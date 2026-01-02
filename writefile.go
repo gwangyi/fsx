@@ -11,7 +11,7 @@ import (
 // WriteFileFS is the interface implemented by a filesystem that provides
 // an optimized WriteFile method.
 type WriteFileFS interface {
-	FS
+	WriterFS
 	// WriteFile writes data to the named file, creating it if necessary.
 	// It is similar to os.WriteFile.
 	WriteFile(name string, data []byte, perm fs.FileMode) error
@@ -24,7 +24,7 @@ type WriteFileFS interface {
 // If the filesystem implements WriteFileFS, its WriteFile method is used.
 // Otherwise, it falls back to using OpenFile (with O_WRONLY|O_CREATE|O_TRUNC)
 // and writing the data to the file.
-// If the filesystem does not implement fsx.FS, it returns errors.ErrUnsupported.
+// If the filesystem does not implement fsx.WriterFS, it returns errors.ErrUnsupported.
 func WriteFile(fsys fs.FS, name string, data []byte, perm fs.FileMode) error {
 	// Try optimized WriteFileFS first
 	if fsysImpl, ok := fsys.(WriteFileFS); ok {

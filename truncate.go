@@ -11,7 +11,7 @@ import (
 // TruncateFS is the interface implemented by a file system that supports
 // truncating files by name.
 type TruncateFS interface {
-	FS
+	WriterFS
 	// Truncate changes the size of the named file.
 	// If the file is a symbolic link, it changes the size of the link's target.
 	Truncate(name string, size int64) error

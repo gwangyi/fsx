@@ -13,7 +13,7 @@ import (
 // File systems that support these operations should implement this interface
 // to allow clients to modify file metadata in a unified way.
 type ChangeFS interface {
-	FS
+	WriterFS
 
 	// Chown changes the numeric uid and gid of the named file.
 	// It is similar to os.Chown.

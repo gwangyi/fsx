@@ -10,9 +10,9 @@ import (
 )
 
 // DirFS is an interface for filesystems that support creating directories.
-// It extends FS (and thus fs.FS) and fs.ReadDirFS with the Mkdir method.
+// It extends WriterFS (and thus fs.FS) and fs.ReadDirFS with the Mkdir method.
 type DirFS interface {
-	FS
+	WriterFS
 	fs.ReadDirFS
 
 	// Mkdir creates a new directory with the specified name and permission bits.

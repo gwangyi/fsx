@@ -10,7 +10,7 @@ import (
 // SymlinkFS is an interface for filesystems that support creating symbolic links.
 // It extends fs.ReadLinkFS to include the Symlink method.
 type SymlinkFS interface {
-	FS
+	WriterFS
 	fs.ReadLinkFS
 
 	// Symlink creates a symbolic link at newname, pointing to oldname.
