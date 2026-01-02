@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"errors"
 	"io"
 	"io/fs"
 )
@@ -38,4 +39,20 @@ func (ReadOnlyFile) Write(d []byte) (int, error) {
 // Truncate returns ErrBadFileDescriptor as ReadOnlyFile does not support truncation.
 func (ReadOnlyFile) Truncate(size int64) error {
 	return ErrBadFileDescriptor
+}
+
+// ReadAt implements io.ReaderAt if the underlying file supports it.
+func (r ReadOnlyFile) ReadAt(p []byte, off int64) (n int, err error) {
+	if ra, ok := r.File.(io.ReaderAt); ok {
+		return ra.ReadAt(p, off)
+	}
+	return 0, errors.ErrUnsupported
+}
+
+// Seek implements io.Seeker if the underlying file supports it.
+func (r ReadOnlyFile) Seek(offset int64, whence int) (int64, error) {
+	if s, ok := r.File.(io.Seeker); ok {
+		return s.Seek(offset, whence)
+	}
+	return 0, errors.ErrUnsupported
 }
