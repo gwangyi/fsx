@@ -3,12 +3,15 @@ package contextual_test
 import (
 	"errors"
 	"io/fs"
+	"os"
 	"testing"
 	"testing/fstest"
 	"time"
 
+	"github.com/gwangyi/fsx"
 	"github.com/gwangyi/fsx/contextual"
 	"github.com/gwangyi/fsx/mockfs"
+	cmockfs "github.com/gwangyi/fsx/mockfs/contextual"
 	"go.uber.org/mock/gomock"
 )
 
@@ -290,5 +293,229 @@ func TestToContextual_Interfaces(t *testing.T) {
 		if err != nil {
 			t.Errorf("Chtimes failed: %v", err)
 		}
+	})
+}
+
+func TestFromContextual(t *testing.T) {
+	t.Run("Open", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Open(ctx, "foo").Return(nil, nil)
+		_, _ = fsys.Open("foo")
+	})
+
+	t.Run("Create", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Create(ctx, "foo").Return(nil, nil)
+		_, _ = fsx.Create(fsys, "foo")
+	})
+
+	t.Run("OpenFile", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().OpenFile(ctx, "foo", os.O_RDWR, fs.FileMode(0644)).Return(nil, nil)
+		_, _ = fsx.OpenFile(fsys, "foo", os.O_RDWR, 0644)
+	})
+
+	t.Run("Remove", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Remove(ctx, "foo").Return(nil)
+		_ = fsx.Remove(fsys, "foo")
+	})
+
+	t.Run("ReadFile", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().ReadFile(ctx, "foo").Return(nil, nil)
+		_, _ = fs.ReadFile(fsys, "foo")
+	})
+
+	t.Run("Stat", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Stat(ctx, "foo").Return(nil, nil)
+		_, _ = fs.Stat(fsys, "foo")
+	})
+
+	t.Run("ReadDir", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().ReadDir(ctx, "foo").Return(nil, nil)
+		_, _ = fs.ReadDir(fsys, "foo")
+	})
+
+	t.Run("Mkdir", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Mkdir(ctx, "foo", fs.FileMode(0755)).Return(nil)
+		_ = fsys.(fsx.DirFS).Mkdir("foo", 0755)
+	})
+
+	t.Run("MkdirAll", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().MkdirAll(ctx, "foo", fs.FileMode(0755)).Return(nil)
+		_ = fsys.(fsx.MkdirAllFS).MkdirAll("foo", 0755)
+	})
+
+	t.Run("RemoveAll", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().RemoveAll(ctx, "foo").Return(nil)
+		_ = fsys.(fsx.RemoveAllFS).RemoveAll("foo")
+	})
+
+	t.Run("Rename", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Rename(ctx, "foo", "bar").Return(nil)
+		_ = fsys.(fsx.RenameFS).Rename("foo", "bar")
+	})
+
+	t.Run("Symlink", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Symlink(ctx, "foo", "bar").Return(nil)
+		_ = fsys.(fsx.SymlinkFS).Symlink("foo", "bar")
+	})
+
+	t.Run("ReadLink", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().ReadLink(ctx, "foo").Return("", nil)
+		_, _ = fsys.(fs.ReadLinkFS).ReadLink("foo")
+	})
+
+	t.Run("Lstat", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Lstat(ctx, "foo").Return(nil, nil)
+		_, _ = fsys.(fs.ReadLinkFS).Lstat("foo")
+	})
+
+	t.Run("Lchown", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Lchown(ctx, "foo", "user", "group").Return(nil)
+		_ = fsys.(fsx.LchownFS).Lchown("foo", "user", "group")
+	})
+
+	t.Run("Truncate", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Truncate(ctx, "foo", int64(100)).Return(nil)
+		_ = fsys.(fsx.TruncateFS).Truncate("foo", 100)
+	})
+
+	t.Run("WriteFile", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().WriteFile(ctx, "foo", []byte("bar"), fs.FileMode(0644)).Return(nil)
+		_ = fsys.(fsx.WriteFileFS).WriteFile("foo", []byte("bar"), 0644)
+	})
+
+	t.Run("Chown", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Chown(ctx, "foo", "user", "group").Return(nil)
+		_ = fsys.(fsx.ChangeFS).Chown("foo", "user", "group")
+	})
+
+	t.Run("Chmod", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		m.EXPECT().Chmod(ctx, "foo", fs.FileMode(0644)).Return(nil)
+		_ = fsys.(fsx.ChangeFS).Chmod("foo", 0644)
+	})
+
+	t.Run("Chtimes", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		m := cmockfs.NewMockFileSystem(ctrl)
+		ctx := t.Context()
+		fsys := contextual.FromContextual(m, ctx)
+
+		atime := time.Now()
+		mtime := atime.Add(time.Second)
+		m.EXPECT().Chtimes(ctx, "foo", atime, mtime).Return(nil)
+		_ = fsys.(fsx.ChangeFS).Chtimes("foo", atime, mtime)
 	})
 }

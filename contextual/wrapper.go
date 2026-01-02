@@ -97,3 +97,125 @@ func (c *contextualFS) Chmod(ctx context.Context, name string, mode fs.FileMode)
 func (c *contextualFS) Chtimes(ctx context.Context, name string, atime, ctime time.Time) error {
 	return fsx.Chtimes(c.fsys, name, atime, ctime)
 }
+
+// FromContextual converts a contextual FS to a non-contextual fs.FS.
+// The returned filesystem satisfies fsx.FileSystem and all standard io/fs interfaces
+// by using the provided context for every operation.
+//
+// This is useful for integrating context-aware filesystems into existing
+// non-contextual APIs or libraries that expect an fs.FS.
+func FromContextual(fsys FS, ctx context.Context) fs.FS {
+	return &nonContextualFS{fsys: fsys, ctx: ctx}
+}
+
+// nonContextualFS implements the non-contextual fsx.FileSystem interface
+// by wrapping a contextual FS and a fixed context.Context.
+// Every method call on this struct delegates to the corresponding
+// package-level helper function (e.g., contextual.ReadFile, contextual.MkdirAll),
+// ensuring that feature detection and fallbacks are handled consistently.
+type nonContextualFS struct {
+	fsys FS
+	ctx  context.Context
+}
+
+// Open implements fs.FS.
+func (n *nonContextualFS) Open(name string) (fs.File, error) {
+	return n.fsys.Open(n.ctx, name)
+}
+
+// Create implements fsx.FS.
+func (n *nonContextualFS) Create(name string) (File, error) {
+	return Create(n.ctx, n.fsys, name)
+}
+
+// OpenFile implements fsx.FS.
+func (n *nonContextualFS) OpenFile(name string, flag int, mode fs.FileMode) (File, error) {
+	return OpenFile(n.ctx, n.fsys, name, flag, mode)
+}
+
+// Remove implements fsx.FS.
+func (n *nonContextualFS) Remove(name string) error {
+	return Remove(n.ctx, n.fsys, name)
+}
+
+// ReadFile implements fs.ReadFileFS.
+func (n *nonContextualFS) ReadFile(name string) ([]byte, error) {
+	return ReadFile(n.ctx, n.fsys, name)
+}
+
+// Stat implements fs.StatFS.
+func (n *nonContextualFS) Stat(name string) (fs.FileInfo, error) {
+	return Stat(n.ctx, n.fsys, name)
+}
+
+// ReadDir implements fs.ReadDirFS.
+func (n *nonContextualFS) ReadDir(name string) ([]fs.DirEntry, error) {
+	return ReadDir(n.ctx, n.fsys, name)
+}
+
+// Mkdir implements fsx.DirFS.
+func (n *nonContextualFS) Mkdir(name string, perm fs.FileMode) error {
+	return Mkdir(n.ctx, n.fsys, name, perm)
+}
+
+// MkdirAll implements fsx.MkdirAllFS.
+func (n *nonContextualFS) MkdirAll(name string, perm fs.FileMode) error {
+	return MkdirAll(n.ctx, n.fsys, name, perm)
+}
+
+// RemoveAll implements fsx.RemoveAllFS.
+func (n *nonContextualFS) RemoveAll(name string) error {
+	return RemoveAll(n.ctx, n.fsys, name)
+}
+
+// Rename implements fsx.RenameFS.
+func (n *nonContextualFS) Rename(oldname, newname string) error {
+	return Rename(n.ctx, n.fsys, oldname, newname)
+}
+
+// Symlink implements fsx.SymlinkFS.
+func (n *nonContextualFS) Symlink(oldname, newname string) error {
+	return Symlink(n.ctx, n.fsys, oldname, newname)
+}
+
+// ReadLink implements fs.ReadLinkFS.
+func (n *nonContextualFS) ReadLink(name string) (string, error) {
+	return ReadLink(n.ctx, n.fsys, name)
+}
+
+// Lstat implements fs.ReadLinkFS.
+func (n *nonContextualFS) Lstat(name string) (fs.FileInfo, error) {
+	return Lstat(n.ctx, n.fsys, name)
+}
+
+// Lchown implements fsx.LchownFS.
+func (n *nonContextualFS) Lchown(name, owner, group string) error {
+	return Lchown(n.ctx, n.fsys, name, owner, group)
+}
+
+// Truncate implements fsx.TruncateFS.
+func (n *nonContextualFS) Truncate(name string, size int64) error {
+	return Truncate(n.ctx, n.fsys, name, size)
+}
+
+// WriteFile implements fsx.WriteFileFS.
+func (n *nonContextualFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
+	return WriteFile(n.ctx, n.fsys, name, data, perm)
+}
+
+// Chown implements fsx.ChangeFS.
+func (n *nonContextualFS) Chown(name, owner, group string) error {
+	return Chown(n.ctx, n.fsys, name, owner, group)
+}
+
+// Chmod implements fsx.ChangeFS.
+func (n *nonContextualFS) Chmod(name string, mode fs.FileMode) error {
+	return Chmod(n.ctx, n.fsys, name, mode)
+}
+
+// Chtimes implements fsx.ChangeFS.
+func (n *nonContextualFS) Chtimes(name string, atime, ctime time.Time) error {
+	return Chtimes(n.ctx, n.fsys, name, atime, ctime)
+}
+
+var _ fsx.FileSystem = &nonContextualFS{}
