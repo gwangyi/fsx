@@ -86,7 +86,7 @@ func TestStat(t *testing.T) {
 func TestLstat(t *testing.T) {
 	ctx := context.Background()
 
-	t.Run("StatFS supported", func(t *testing.T) {
+	t.Run("ReadLinkFS supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -98,8 +98,8 @@ func TestLstat(t *testing.T) {
 		info.EXPECT().IsDir().Return(false).AnyTimes()
 		info.EXPECT().Sys().Return(nil).AnyTimes()
 
-		mfs := cmockfs.NewMockStatFS(ctrl)
-		mfs.EXPECT().Stat(ctx, "foo").Return(info, nil)
+		mfs := cmockfs.NewMockReadLinkFS(ctrl)
+		mfs.EXPECT().Lstat(ctx, "foo").Return(info, nil)
 
 		got, err := contextual.Lstat(ctx, mfs, "foo")
 		if err != nil {
@@ -107,6 +107,19 @@ func TestLstat(t *testing.T) {
 		}
 		if got.Mode()&os.ModeSymlink == 0 {
 			t.Error("expected symlink mode")
+		}
+	})
+
+	t.Run("ReadLinkFS returns error", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mfs := cmockfs.NewMockReadLinkFS(ctrl)
+		mfs.EXPECT().Lstat(ctx, "foo").Return(nil, errors.New("lstat error"))
+
+		_, err := contextual.Lstat(ctx, mfs, "foo")
+		if err == nil {
+			t.Fatal("expected error, got nil")
 		}
 	})
 
