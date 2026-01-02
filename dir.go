@@ -20,6 +20,9 @@ type DirFS interface {
 	Mkdir(name string, perm fs.FileMode) error
 }
 
+// ReadDirFile is a file that supports reading directory entries.
+type ReadDirFile = fs.ReadDirFile
+
 // MkdirAllFS is an interface for filesystems that support creating a directory
 // along with any necessary parents (mkdir -p).
 type MkdirAllFS interface {
