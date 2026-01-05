@@ -36,7 +36,7 @@ func TestFilesystem_EvictMaxFiles(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	// Initial walk: empty
 	dot := mockfs.NewMockFileInfo(ctrl)
@@ -89,7 +89,7 @@ func TestFilesystem_Touch(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	// Initial walk: empty
 	dot := mockfs.NewMockFileInfo(ctrl)
@@ -139,7 +139,7 @@ func TestFilesystem_EvictMaxSize(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	// Initial walk: empty
 	dot := mockfs.NewMockFileInfo(ctrl)
@@ -182,7 +182,7 @@ func TestFilesystem_Init(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	// Initial walk: 2 files
 	info1 := newMockFileInfo(ctrl, "file1", 10, time.Now())
@@ -227,7 +227,7 @@ func TestFilesystem_Delegation(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -303,7 +303,7 @@ func TestFilesystem_Touch_Error(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -337,7 +337,7 @@ func TestFilesystem_RemoveAll_Recursive(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -360,7 +360,7 @@ func TestFilesystem_Init_Extra(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -386,7 +386,7 @@ func TestFilesystem_Errors(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	// New error (init fails)
 	m.EXPECT().Stat(gomock.Any(), ".").Return(nil, fs.ErrPermission)
@@ -422,7 +422,7 @@ func TestFilesystem_OnAccessExpiration(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -539,7 +539,7 @@ func TestFilesystem_checkExpired_Coverage(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -568,7 +568,7 @@ func TestFilesystem_OpenFile_Create(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -599,7 +599,7 @@ func TestFilesystem_Coverage_Init_InfoError(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -623,7 +623,7 @@ func TestFilesystem_Coverage_Touch_TrackedError(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -649,7 +649,7 @@ func TestFilesystem_Coverage_RemoveAll_Error(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -669,7 +669,7 @@ func TestFilesystem_Coverage_Rename_Tracked(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -695,7 +695,7 @@ func TestFilesystem_Remove(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()
@@ -723,7 +723,7 @@ func TestFilesystem_FileOps(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := cmockfs.NewMockFileSystem(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	dot := mockfs.NewMockFileInfo(ctrl)
 	dot.EXPECT().IsDir().Return(true).AnyTimes()

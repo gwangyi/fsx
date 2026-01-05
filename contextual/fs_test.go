@@ -1,7 +1,6 @@
 package contextual_test
 
 import (
-	"context"
 	"errors"
 	"io"
 	"io/fs"
@@ -51,7 +50,7 @@ func TestExtendFileInfo(t *testing.T) {
 }
 
 func TestOpen(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -66,7 +65,7 @@ func TestOpen(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
@@ -144,7 +143,7 @@ func TestCreate(t *testing.T) {
 }
 
 func TestOpenFile(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
@@ -248,7 +247,7 @@ func TestOpenFile(t *testing.T) {
 }
 
 func TestRemove(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
@@ -302,7 +301,7 @@ func TestRemove(t *testing.T) {
 // Additional tests for other functions in contextualfs
 
 func TestReadFile(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)

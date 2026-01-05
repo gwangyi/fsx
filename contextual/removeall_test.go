@@ -1,7 +1,6 @@
 package contextual_test
 
 import (
-	"context"
 	"errors"
 	"io/fs"
 	"os"
@@ -14,7 +13,7 @@ import (
 )
 
 func TestRemoveAll(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("OptimizedPath", func(t *testing.T) {
 		ctrl := gomock.NewController(t)

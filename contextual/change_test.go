@@ -1,7 +1,6 @@
 package contextual_test
 
 import (
-	"context"
 	"errors"
 	"io/fs"
 	"testing"
@@ -13,7 +12,7 @@ import (
 )
 
 func TestChown(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
@@ -51,7 +50,7 @@ func TestChown(t *testing.T) {
 }
 
 func TestChmod(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
@@ -89,7 +88,7 @@ func TestChmod(t *testing.T) {
 }
 
 func TestChtimes(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)

@@ -1,7 +1,6 @@
 package contextual_test
 
 import (
-	"context"
 	"errors"
 	"testing"
 
@@ -11,7 +10,7 @@ import (
 )
 
 func TestSymlink(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
@@ -49,7 +48,7 @@ func TestSymlink(t *testing.T) {
 }
 
 func TestLchown(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
@@ -87,7 +86,7 @@ func TestLchown(t *testing.T) {
 }
 
 func TestReadLink(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)

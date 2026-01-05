@@ -16,7 +16,7 @@ import (
 )
 
 func TestBindFS(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	config := bindfs.Config{
 		Owner:      bindfs.Static("alice"),
@@ -426,7 +426,7 @@ func TestBindFS(t *testing.T) {
 		mockFS := cmockfs.NewMockFileSystem(ctrl)
 
 		type ctxKey struct{}
-		myCtx := context.WithValue(context.Background(), ctxKey{}, "val")
+		myCtx := context.WithValue(t.Context(), ctxKey{}, "val")
 
 		config := bindfs.Config{
 			Owner: func(ctx context.Context, name string) string {
@@ -459,7 +459,7 @@ func TestFileWrapper_Stat(t *testing.T) {
 	mockFS := cmockfs.NewMockFileSystem(ctrl)
 	mockFile := mockfs.NewMockFile(ctrl)
 	mockFI := mockfs.NewMockFileInfo(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	config := bindfs.Config{
 		Owner: bindfs.Static("alice"),
@@ -500,7 +500,7 @@ func TestFileInfo_NoOverrides(t *testing.T) {
 
 	mockFS := cmockfs.NewMockFileSystem(ctrl)
 	mockFI := mockfs.NewMockFileInfo(ctrl)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	fsys := bindfs.New(mockFS, bindfs.Config{})
 

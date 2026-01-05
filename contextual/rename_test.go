@@ -1,7 +1,6 @@
 package contextual_test
 
 import (
-	"context"
 	"errors"
 	"io"
 	"io/fs"
@@ -15,7 +14,7 @@ import (
 )
 
 func TestRename(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)

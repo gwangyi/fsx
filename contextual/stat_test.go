@@ -1,7 +1,6 @@
 package contextual_test
 
 import (
-	"context"
 	"errors"
 	"io/fs"
 	"os"
@@ -15,7 +14,7 @@ import (
 )
 
 func TestStat(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("StatFS supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
@@ -84,7 +83,7 @@ func TestStat(t *testing.T) {
 }
 
 func TestLstat(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("ReadLinkFS supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)

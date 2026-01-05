@@ -1,7 +1,6 @@
 package contextual_test
 
 import (
-	"context"
 	"errors"
 	"io/fs"
 	"syscall"
@@ -14,7 +13,7 @@ import (
 )
 
 func TestMkdir(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("OptimizedPath", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
@@ -42,7 +41,7 @@ func TestMkdir(t *testing.T) {
 }
 
 func TestMkdirAll(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("OptimizedPath", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
@@ -171,7 +170,7 @@ func TestMkdirAll(t *testing.T) {
 }
 
 func TestReadDir(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	t.Run("ReadDirFS supported", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
