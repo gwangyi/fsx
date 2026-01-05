@@ -419,6 +419,37 @@ func TestBindFS(t *testing.T) {
 			t.Fatalf("Chtimes failed: %v", err)
 		}
 	})
+
+	t.Run("Context", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		mockFS := cmockfs.NewMockFileSystem(ctrl)
+
+		type ctxKey struct{}
+		myCtx := context.WithValue(context.Background(), ctxKey{}, "val")
+
+		config := bindfs.Config{
+			Owner: func(ctx context.Context, name string) string {
+				if v := ctx.Value(ctxKey{}); v != nil {
+					return v.(string)
+				}
+				return "nobody"
+			},
+		}
+		fsys := bindfs.New(mockFS, config)
+
+		mockFI := mockfs.NewMockFileInfo(ctrl)
+		mockFS.EXPECT().Stat(myCtx, "test.txt").Return(mockFI, nil)
+
+		fi, err := fsys.Stat(myCtx, "test.txt")
+		if err != nil {
+			t.Fatalf("Stat failed: %v", err)
+		}
+		xfi := fi.(fsx.FileInfo)
+		if xfi.Owner() != "val" {
+			t.Errorf("Expected owner val, got %s", xfi.Owner())
+		}
+	})
 }
 
 func TestFileWrapper_Stat(t *testing.T) {
